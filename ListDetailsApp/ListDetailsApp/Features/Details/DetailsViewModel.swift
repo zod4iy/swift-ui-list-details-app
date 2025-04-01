@@ -1,9 +1,8 @@
 import Foundation
-import Combine
 
 class DetailsViewModel: ObservableObject {
   enum State {
-    case initial(UUID)
+    case initial
     case loading
     case failed(String)
     case loaded(ItemDetails)
@@ -14,16 +13,18 @@ class DetailsViewModel: ObservableObject {
   var onRemoveFromFavourites: (UUID) -> Void
   
   
-  private var repository: DetailsRepositoryProtocol?
-  private var cancelBag: Set<AnyCancellable> = []
+  private let repository: DetailsRepositoryProtocol?
   private var itemDetails: ItemDetails?
+  private let id: UUID
   
   init(
+    id: UUID,
     repository: DetailsRepositoryProtocol? = nil,
-    state: State,
+    state: State = .initial,
     onAddToFavourites: @escaping (UUID) -> Void = { _ in },
     onRemoveFromFavourites: @escaping (UUID) -> Void = { _ in }
   ) {
+    self.id = id
     self.repository = repository
     self.state = state
     self.onAddToFavourites = onAddToFavourites
@@ -31,23 +32,16 @@ class DetailsViewModel: ObservableObject {
   }
   
   @MainActor
-  func fetchItemDetails(id: UUID) async {
+  func fetchItemDetails() async {
     state = .loading
     
-    Task {
-      await repository?.dataProvider.fetchItemDetails(id: id)
-        .mapError({ [weak self] detailsDataError in
-          self?.state = .failed(detailsDataError.errorMessage)
-          return detailsDataError
-        })
-        .sink(
-          receiveCompletion: { error in  },
-          receiveValue: { [weak self] itemDetails in
-            self?.itemDetails = itemDetails
-            self?.state = .loaded(itemDetails)
-          }
-        )
-        .store(in: &cancelBag)
+    do {
+      if let itemDetails = try await repository?.dataProvider.fetchItemDetails(id: id) {
+        self.state = .loaded(itemDetails)
+        self.itemDetails = itemDetails
+      }
+    } catch {
+      state = .failed("detailsDataError.errorMessage")
     }
   }
   

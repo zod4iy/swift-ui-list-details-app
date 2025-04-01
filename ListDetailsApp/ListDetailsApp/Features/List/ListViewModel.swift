@@ -1,5 +1,4 @@
 import Foundation
-import Combine
 
 final class ListViewModel: ObservableObject {
   enum State {
@@ -9,12 +8,12 @@ final class ListViewModel: ObservableObject {
     case loaded([Item])
   }
 
-  @Published var state = State.initial
+  @Published var state: State
   
-  private var repository: ListRepositoryProtocol?
-  private var cancelBag: Set<AnyCancellable> = []
+  private let repository: ListRepositoryProtocol?
   private var items: [Item]?
   
+
   init(
     repository: ListRepositoryProtocol? = nil,
     state: State = .initial
@@ -27,24 +26,15 @@ final class ListViewModel: ObservableObject {
   func fetchListItems() async {
     state = .loading
     
-    Task {
-      await repository?.dataProvider.fetchListItems()
-        .mapError({ [weak self] listDataError in
-          self?.state = .failed(listDataError.errorMessage)
-          return listDataError
-        })
-        .sink(
-          receiveCompletion: { error in  },
-          receiveValue: { [weak self] itemList in
-            self?.items = itemList
-            self?.state = .loaded(itemList)
-          }
-        )
-        .store(in: &cancelBag)
+    do {
+      let items = try await repository?.dataProvider.fetchListItems() ?? []
+      state = .loaded(items)
+      self.items = items
+    } catch {
+      state = .failed("Something went wrong")
     }
   }
-  
-  
+
   func removeFromFavourites(itemID: UUID) {
     guard let items = self.items else { return }
     items.first(where: { $0.id == itemID})?.isFavourite = false

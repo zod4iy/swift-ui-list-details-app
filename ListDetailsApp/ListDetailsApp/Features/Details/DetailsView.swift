@@ -4,9 +4,9 @@ struct DetailsView: View {
   @ObservedObject var viewModel: DetailsViewModel
   
   var body: some View {
-    switch viewModel.state {
-    case.loaded(let details):
-      NavigationStack {
+    NavigationStack {
+      switch viewModel.state {
+      case.loaded(let details):
         VStack {
           VStack(alignment: .leading) {
             Text(details.title)
@@ -27,32 +27,33 @@ struct DetailsView: View {
         }
         .padding()
         .navigationTitle("Item Details")
+      case .initial:
+        ProgressView()
+          .progressViewStyle(
+            CircularProgressViewStyle(tint: .blue)
+          )
+          .scaleEffect(2.0, anchor: .center)
+      case .loading:
+        ProgressView()
+          .progressViewStyle(
+            CircularProgressViewStyle(tint: .blue)
+          )
+          .scaleEffect(2.0, anchor: .center)
+      case .failed(let error):
+        Text(error)
       }
-    case .initial(let id):
-      ProgressView()
-        .progressViewStyle(
-          CircularProgressViewStyle(tint: .blue)
-        )
-        .scaleEffect(2.0, anchor: .center)
-        .task {
-          await viewModel.fetchItemDetails(id: id)
-        }
-    case .loading:
-      ProgressView()
-        .progressViewStyle(
-          CircularProgressViewStyle(tint: .blue)
-        )
-        .scaleEffect(2.0, anchor: .center)
-    case .failed(let error):
-      Text(error)
+    }.task {
+      await viewModel.fetchItemDetails()
     }
   }
 }
 
 #Preview {
+  let id = UUID()
   DetailsView(viewModel: .init(
+    id: id,
     state: .loaded(ItemDetails(
-      id: UUID(),
+      id: id,
       title: "Title",
       subtitle: "Subtitle",
       isFavourite: false,

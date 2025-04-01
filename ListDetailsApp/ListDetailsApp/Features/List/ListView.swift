@@ -4,17 +4,18 @@ struct ListView: View {
   @ObservedObject var viewModel: ListViewModel
   
   var body: some View {
-    switch viewModel.state {
-    case.loaded(let items):
-      NavigationStack {
+    NavigationStack {
+      switch viewModel.state {
+      case.loaded(let items):
         List {
           ForEach(items) { item in
             NavigationLink(
               destination: DetailsView(viewModel: .init(
+                id: item.id,
                 repository: DetailsRepository(
-                  dataProvider: DetailsDataProviderImpl()
+                  dataProvider: DetailsDataProvider()
                 ),
-                state: .initial(item.id),
+                state: .initial,
                 onAddToFavourites: { id in
                   viewModel.addToFavourites(itemID: id)
                 },
@@ -33,24 +34,24 @@ struct ListView: View {
           }
         }
         .navigationTitle("Items")
+      case .initial:
+        ProgressView()
+          .progressViewStyle(
+            CircularProgressViewStyle(tint: .blue)
+          )
+          .scaleEffect(2.0, anchor: .center)
+      case .loading:
+        ProgressView()
+          .progressViewStyle(
+            CircularProgressViewStyle(tint: .blue)
+          )
+          .scaleEffect(2.0, anchor: .center)
+      case .failed(let error):
+        Text(error)
       }
-    case .initial:
-      ProgressView()
-        .progressViewStyle(
-          CircularProgressViewStyle(tint: .blue)
-        )
-        .scaleEffect(2.0, anchor: .center)
-        .task {
-          await viewModel.fetchListItems()
-        }
-    case .loading:
-      ProgressView()
-        .progressViewStyle(
-          CircularProgressViewStyle(tint: .blue)
-        )
-        .scaleEffect(2.0, anchor: .center)
-    case .failed(let error):
-      Text(error)
+    }
+    .task {
+      await viewModel.fetchListItems()
     }
   }
 }

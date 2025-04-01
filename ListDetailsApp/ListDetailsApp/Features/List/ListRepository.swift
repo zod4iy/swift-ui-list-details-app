@@ -1,8 +1,7 @@
 import Foundation
-import Combine
 
 protocol ListDataProviderProtocol {
-  func fetchListItems() async -> Future<[Item], ListDataError>
+  func fetchListItems() async throws -> [Item]
 }
 
 protocol ListRepositoryProtocol {
@@ -16,13 +15,15 @@ class ListRepository: ListRepositoryProtocol {
     self.dataProvider = dataProvider
   }
   
-  func fetchListItems() async -> Future<[Item], ListDataError> {
-    await dataProvider.fetchListItems()
+  func fetchListItems() async throws -> [Item] {
+    do {
+      return try await dataProvider.fetchListItems()
+    } catch {
+      throw ListDataError.unknown
+    }
   }
 }
 
-struct ListDataError: Error {
-  static let defaultMessage = "Fetch list items error occurs!"
-  
-  let errorMessage: String
+enum ListDataError: Error {
+  case unknown
 }

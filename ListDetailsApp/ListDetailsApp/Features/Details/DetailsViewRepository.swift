@@ -1,8 +1,7 @@
 import Foundation
-import Combine
 
 protocol DetailsDataProviderProtocol {
-  func fetchItemDetails(id: UUID) async -> Future<ItemDetails, DetailsDataError>
+  func fetchItemDetails(id: UUID) async throws -> ItemDetails
 }
 
 protocol DetailsRepositoryProtocol {
@@ -16,13 +15,15 @@ class DetailsRepository: DetailsRepositoryProtocol {
     self.dataProvider = dataProvider
   }
   
-  func fetchItemDetails(id: UUID) async -> Future<ItemDetails, DetailsDataError> {
-    await dataProvider.fetchItemDetails(id: id)
+  func fetchItemDetails(id: UUID) async throws -> ItemDetails {
+    do {
+      return try await dataProvider.fetchItemDetails(id: id)
+    } catch {
+      throw DetailsDataError.uknown
+    }
   }
 }
 
-struct DetailsDataError: Error {
-  static let defaultMessage = "Fetch item details error occurs!"
-  
-  let errorMessage: String
+enum DetailsDataError: Error {
+  case uknown
 }
