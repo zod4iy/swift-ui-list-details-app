@@ -5,11 +5,10 @@ struct ListView: View {
   
   var body: some View {
     switch viewModel.state {
-    // case.loaded(let items):
-    case.loaded:
+    case.loaded(let items):
       NavigationStack {
         List {
-          ForEach(viewModel.items) { item in
+          ForEach(items) { item in
             NavigationLink(
               destination: DetailsView(viewModel: .init(
                 repository: DetailsRepository(
@@ -62,36 +61,20 @@ struct ListView: View {
       //      state: .initial,
       //      state: .loading,
       //      state: .failed("Fetch list items error occurs!")
-      //      state: .loaded([
-      //        Item(
-      //          id: UUID(),
-      //          title: "Mock 1 title",
-      //          subtitle: "Mock 1 subtitle",
-      //          isFavourite: false
-      //        ),
-      //        Item(
-      //          id: UUID(),
-      //          title: "Mock 2 title",
-      //          subtitle: "Mock 2 subtitle",
-      //          isFavourite: true
-      //        ),
-      //      ])
-      
-      state: .loaded,
-      items: [
-        Item(
-          id: UUID(),
-          title: "Mock 1 title",
-          subtitle: "Mock 1 subtitle",
-          isFavourite: false
-        ),
-        Item(
-          id: UUID(),
-          title: "Mock 2 title",
-          subtitle: "Mock 2 subtitle",
-          isFavourite: true
-        ),
-      ]
+            state: .loaded([
+              Item(
+                id: UUID(),
+                title: "Mock 1 title",
+                subtitle: "Mock 1 subtitle",
+                isFavourite: false
+              ),
+              Item(
+                id: UUID(),
+                title: "Mock 2 title",
+                subtitle: "Mock 2 subtitle",
+                isFavourite: true
+              ),
+            ])
     )
   )
 }

@@ -6,25 +6,21 @@ final class ListViewModel: ObservableObject {
     case initial
     case loading
     case failed(String)
-    //case loaded([Item])
-    case loaded
+    case loaded([Item])
   }
 
   @Published var state = State.initial
-  @Published var items: [Item]
   
   private var repository: ListRepositoryProtocol?
   private var cancelBag: Set<AnyCancellable> = []
-//  private var items: [Item]?
+  private var items: [Item]?
   
   init(
     repository: ListRepositoryProtocol? = nil,
-    state: State = .initial,
-    items: [Item] = []
+    state: State = .initial
   ) {
     self.repository = repository
     self.state = state
-    self.items = items
   }
   
   @MainActor
@@ -41,7 +37,7 @@ final class ListViewModel: ObservableObject {
           receiveCompletion: { error in  },
           receiveValue: { [weak self] itemList in
             self?.items = itemList
-            self?.state = .loaded
+            self?.state = .loaded(itemList)
           }
         )
         .store(in: &cancelBag)
@@ -50,11 +46,17 @@ final class ListViewModel: ObservableObject {
   
   
   func removeFromFavourites(itemID: UUID) {
+    guard let items = self.items else { return }
     items.first(where: { $0.id == itemID})?.isFavourite = false
+    
+    state = .loaded(items)
   }
   
   func addToFavourites(itemID: UUID) {
+    guard let items = self.items else { return }
     items.first(where: { $0.id == itemID})?.isFavourite = true
+    
+    state = .loaded(items)
   }
 }
 
