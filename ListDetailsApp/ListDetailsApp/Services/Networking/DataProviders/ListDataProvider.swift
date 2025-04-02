@@ -1,6 +1,6 @@
 import Foundation
 
-class ListDataProviderImpl: ListDataProviderProtocol {
+class ListDataProvider: ListDataProviderProtocol {
   func fetchListItems() async throws -> [Item] {
     do {
       try await Task.sleep(for: .seconds(1))

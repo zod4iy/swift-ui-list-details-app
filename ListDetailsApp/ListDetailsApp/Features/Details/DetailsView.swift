@@ -4,7 +4,7 @@ struct DetailsView: View {
   @ObservedObject var viewModel: DetailsViewModel
   
   var body: some View {
-    NavigationStack {
+    VStack {
       switch viewModel.state {
       case.loaded(let details):
         VStack {
@@ -51,7 +51,12 @@ struct DetailsView: View {
 #Preview {
   let id = UUID()
   DetailsView(viewModel: .init(
-    id: id,
+    item: Item(
+      id: id,
+      title: "Title",
+      subtitle: "Subtitle",
+      isFavourite: false
+    ),
     state: .loaded(ItemDetails(
       id: id,
       title: "Title",

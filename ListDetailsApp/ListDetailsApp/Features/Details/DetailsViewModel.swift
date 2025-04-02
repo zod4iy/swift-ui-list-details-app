@@ -15,16 +15,16 @@ class DetailsViewModel: ObservableObject {
   
   private let repository: DetailsRepositoryProtocol?
   private var itemDetails: ItemDetails?
-  private let id: UUID
+  private let item: Item
   
   init(
-    id: UUID,
+    item: Item,
     repository: DetailsRepositoryProtocol? = nil,
     state: State = .initial,
     onAddToFavourites: @escaping (UUID) -> Void = { _ in },
     onRemoveFromFavourites: @escaping (UUID) -> Void = { _ in }
   ) {
-    self.id = id
+    self.item = item
     self.repository = repository
     self.state = state
     self.onAddToFavourites = onAddToFavourites
@@ -36,7 +36,7 @@ class DetailsViewModel: ObservableObject {
     state = .loading
     
     do {
-      if let itemDetails = try await repository?.dataProvider.fetchItemDetails(id: id) {
+      if let itemDetails = try await repository?.dataProvider.fetchItemDetails(item: item) {
         self.state = .loaded(itemDetails)
         self.itemDetails = itemDetails
       }

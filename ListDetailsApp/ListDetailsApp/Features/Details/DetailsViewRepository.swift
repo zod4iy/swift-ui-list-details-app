@@ -1,7 +1,7 @@
 import Foundation
 
 protocol DetailsDataProviderProtocol {
-  func fetchItemDetails(id: UUID) async throws -> ItemDetails
+  func fetchItemDetails(item: Item) async throws -> ItemDetails
 }
 
 protocol DetailsRepositoryProtocol {
@@ -15,9 +15,9 @@ class DetailsRepository: DetailsRepositoryProtocol {
     self.dataProvider = dataProvider
   }
   
-  func fetchItemDetails(id: UUID) async throws -> ItemDetails {
+  func fetchItemDetails(item: Item) async throws -> ItemDetails {
     do {
-      return try await dataProvider.fetchItemDetails(id: id)
+      return try await dataProvider.fetchItemDetails(item: item)
     } catch {
       throw DetailsDataError.uknown
     }
