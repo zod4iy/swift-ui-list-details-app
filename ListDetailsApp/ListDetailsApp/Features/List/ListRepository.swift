@@ -8,7 +8,7 @@ protocol ListRepositoryProtocol {
   var dataProvider: ListDataProviderProtocol { get }
 }
 
-class ListRepository: ListRepositoryProtocol {
+final class ListRepository: ListRepositoryProtocol {
   let dataProvider: ListDataProviderProtocol
   
   init(dataProvider: ListDataProviderProtocol) {

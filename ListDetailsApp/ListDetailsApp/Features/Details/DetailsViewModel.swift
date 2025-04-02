@@ -1,6 +1,6 @@
 import Foundation
 
-class DetailsViewModel: ObservableObject {
+final class DetailsViewModel: ObservableObject {
   enum State {
     case initial
     case loading
@@ -46,9 +46,6 @@ class DetailsViewModel: ObservableObject {
   }
   
   func removeFromFavourites(itemID: UUID) {
-    // TODO: - add endpoint for the POST request
-    // and use repository?.dataProvider.removeFromFavourites(id: id)
-    
     guard let itemDetails = self.itemDetails else { return }
     
     itemDetails.isFavourite = false
@@ -58,9 +55,6 @@ class DetailsViewModel: ObservableObject {
   }
   
   func addToFavourites(itemID: UUID) {
-    // TODO: - add endpoint for the POST request
-    // and use repository?.dataProvider.removeFromFavourites(id: id)
-    
     guard let itemDetails = self.itemDetails else { return }
     
     itemDetails.isFavourite = true

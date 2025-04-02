@@ -29,5 +29,13 @@ class Router: ObservableObject {
   
   @Published var path = NavigationPath()
   
+  func push(route: RoutePath) {
+    path.append(route)
+  }
+  
+  func pop() {
+    path.removeLast()
+  }
+  
   private init() {}
 }

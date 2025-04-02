@@ -8,7 +8,7 @@ protocol DetailsRepositoryProtocol {
   var dataProvider: DetailsDataProviderProtocol { get }
 }
 
-class DetailsRepository: DetailsRepositoryProtocol {
+final class DetailsRepository: DetailsRepositoryProtocol {
   let dataProvider: DetailsDataProviderProtocol
   
   init(dataProvider: DetailsDataProviderProtocol) {

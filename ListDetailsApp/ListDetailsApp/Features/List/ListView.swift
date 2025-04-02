@@ -10,7 +10,9 @@ struct ListView: View {
         ForEach(items) { item in
           Button(
             action: {
-              Router.shared.path.append(RoutePath(.details(viewModel, item)))
+              Router
+                .shared
+                .push(route: RoutePath(.details(viewModel, item)))
             },
             label: {
               Label(
