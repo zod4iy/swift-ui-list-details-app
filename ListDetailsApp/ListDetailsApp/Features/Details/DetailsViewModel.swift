@@ -46,7 +46,7 @@ final class DetailsViewModel: ObservableObject {
     }
   }
   
-  func removeFromFavourites(itemID: UUID) {
+  func removeFromFavourites() {
     guard let itemDetails = self.itemDetails else { return }
     
     itemDetails.isFavourite = false
@@ -54,7 +54,7 @@ final class DetailsViewModel: ObservableObject {
     action(.removeFromFavorites)
   }
   
-  func addToFavourites(itemID: UUID) {
+  func addToFavourites() {
     guard let itemDetails = self.itemDetails else { return }
     
     itemDetails.isFavourite = true

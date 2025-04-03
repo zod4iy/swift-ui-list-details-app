@@ -28,13 +28,13 @@ struct DetailsView: View {
           if details.isFavourite {
             PrimaryButton(
               title: "Remove from favourites",
-              action: { viewModel.removeFromFavourites(itemID: details.id) }
+              action: { viewModel.removeFromFavourites() }
             )
           } else {
             PrimaryButton(
               title: "Add to favourites",
               backgroundColor: .green,
-              action: { viewModel.addToFavourites(itemID: details.id) }
+              action: { viewModel.addToFavourites() }
             )
           }
         }
