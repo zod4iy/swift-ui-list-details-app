@@ -7,14 +7,14 @@ class ListDataProvider: ListDataProviderProtocol {
       return [
         Item(
           id: UUID(),
-          title: "Mock 1 title",
-          subtitle: "Mock 1 subtitle",
+          title: "Item 1 title",
+          subtitle: "Item 1 subtitle",
           isFavourite: false
         ),
         Item(
           id: UUID(),
-          title: "Mock 2 title",
-          subtitle: "Mock 2 subtitle",
+          title: "Item 2 title",
+          subtitle: "Item 2 subtitle",
           isFavourite: true
         )
       ]
