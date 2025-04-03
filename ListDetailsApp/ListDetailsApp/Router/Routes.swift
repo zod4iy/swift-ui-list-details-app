@@ -2,16 +2,16 @@ import Foundation
 
 enum Routes: Equatable {
   case details(ListViewModel, Item)
-  case error_screen(Error)
-  case none
+  case error(Error)
+  case unknown
   
   static func == (lhs: Routes, rhs: Routes) -> Bool {
     switch (lhs, rhs) {
     case (.details, .details),
-         (.none, .none):
+         (.unknown, .unknown):
       return true
       
-    case let (.error_screen(error1), .error_screen(error2)):
+    case let (.error(error1), .error(error2)):
       return error1.localizedDescription == error2.localizedDescription
       
     default:

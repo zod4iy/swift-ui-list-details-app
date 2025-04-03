@@ -29,10 +29,10 @@ struct NavigationRouteView: View {
                   listViewModel.removeFromFavourites(itemID: id)
                 }
               ))
-            case .error_screen(let error):
-              Text("Some error screen \(error.localizedDescription)")
-            case .none:
-              Text("no route")
+            case .error(let error):
+              Text("Error: \(error.localizedDescription)")
+            case .unknown:
+              Text("Unknown")
             }
           }
         )
