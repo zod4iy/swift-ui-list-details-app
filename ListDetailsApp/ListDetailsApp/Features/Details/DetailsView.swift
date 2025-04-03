@@ -9,24 +9,36 @@ struct DetailsView: View {
       case.loaded(let details):
         VStack {
           VStack(alignment: .leading) {
-            Text(details.title)
-              .font(.largeTitle)
+            HStack {
+              Image(systemName: "doc")
+                .foregroundColor(.white)
+                .padding()
+                .background(Circle().fill(Color.secondary))
+              Text(details.title)
+                .font(.largeTitle)
+            }
+            .padding(.bottom, 16.0)
+            
             Text(details.subtitle)
               .font(.title2)
             Divider()
             Text(details.description)
           }
           Spacer()
-          details.isFavourite
-            ? Button("Remove from favourites") {
-              viewModel.removeFromFavourites(itemID: details.id)
-            }
-            : Button("Add to favourite") {
-              viewModel.addToFavourites(itemID: details.id)
-            }
+          if details.isFavourite {
+            PrimaryButton(
+              title: "Remove from favourites",
+              action: { viewModel.removeFromFavourites(itemID: details.id) }
+            )
+          } else {
+            PrimaryButton(
+              title: "Add to favourites",
+              backgroundColor: .green,
+              action: { viewModel.addToFavourites(itemID: details.id) }
+            )
+          }
         }
         .padding()
-        .navigationTitle("Item Details")
       case .initial:
         ProgressView()
           .progressViewStyle(
@@ -52,7 +64,7 @@ struct DetailsView: View {
   let id = UUID()
   DetailsView(viewModel: .init(
     item: Item(
-      id: id,
+      id:  id,
       title: "Title",
       subtitle: "Subtitle",
       isFavourite: false
