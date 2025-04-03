@@ -7,11 +7,14 @@ final class DetailsViewModel: ObservableObject {
     case failed(String)
     case loaded(ItemDetails)
   }
+  
+  enum Action {
+    case addToFavorites
+    case removeFromFavorites
+  }
 
   @Published var state: State
-  var onAddToFavourites: (UUID) -> Void
-  var onRemoveFromFavourites: (UUID) -> Void
-  
+  private let action: (Action) -> Void
   
   private let repository: DetailsRepositoryProtocol?
   private var itemDetails: ItemDetails?
@@ -21,14 +24,12 @@ final class DetailsViewModel: ObservableObject {
     item: Item,
     repository: DetailsRepositoryProtocol? = nil,
     state: State = .initial,
-    onAddToFavourites: @escaping (UUID) -> Void = { _ in },
-    onRemoveFromFavourites: @escaping (UUID) -> Void = { _ in }
+    action: @escaping (Action) -> Void = { _ in }
   ) {
     self.item = item
     self.repository = repository
     self.state = state
-    self.onAddToFavourites = onAddToFavourites
-    self.onRemoveFromFavourites = onRemoveFromFavourites
+    self.action = action
   }
   
   @MainActor
@@ -50,8 +51,7 @@ final class DetailsViewModel: ObservableObject {
     
     itemDetails.isFavourite = false
     state = .loaded(itemDetails)
-    
-    onRemoveFromFavourites(itemID)
+    action(.removeFromFavorites)
   }
   
   func addToFavourites(itemID: UUID) {
@@ -59,8 +59,7 @@ final class DetailsViewModel: ObservableObject {
     
     itemDetails.isFavourite = true
     state = .loaded(itemDetails)
-    
-    onAddToFavourites(itemID)
+    action(.addToFavorites)
   }
 }
 

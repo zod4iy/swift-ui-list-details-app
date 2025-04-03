@@ -1,7 +1,7 @@
 import Foundation
 
 enum Routes: Equatable {
-  case details(ListViewModel, Item)
+  case details(Item, aciton: (DetailsViewModel.Action) -> Void)
   case error(Error)
   case unknown
   

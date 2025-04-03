@@ -3,31 +3,32 @@ import SwiftUI
 struct NavigationRouteView: View {
   @ObservedObject var router = Router.shared
   
+  @StateObject var listViewModel = ListViewModel.init(
+    repository: ListRepository(
+      dataProvider: ListDataProvider()
+    )
+  )
+  
   var body: some View {
     NavigationStack(path: $router.path) {
-      ListView(viewModel: router.rootViewModel)
+      ListView(viewModel: listViewModel)
         .onFirstAppear {
           Task {
-            await router.rootViewModel.fetchListItems()
+            await listViewModel.fetchListItems()
           }
         }
         .navigationDestination(
           for: RoutePath.self,
           destination: { route in
             switch route.route {
-            case .details(let listViewModel, let item):
+            case .details(let item, let action):
               DetailsView(viewModel: .init(
                 item: item,
                 repository: DetailsRepository(
                   dataProvider: DetailsDataProvider()
                 ),
                 state: .initial,
-                onAddToFavourites: { id in
-                  listViewModel.addToFavourites(itemID: id)
-                },
-                onRemoveFromFavourites: { id in
-                  listViewModel.removeFromFavourites(itemID: id)
-                }
+                action: action
               ))
             case .error(let error):
               Text("Error: \(error.localizedDescription)")

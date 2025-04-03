@@ -35,18 +35,33 @@ final class ListViewModel: ObservableObject {
     }
   }
 
-  func removeFromFavourites(itemID: UUID) {
+  private func removeFromFavourites(itemID: UUID) {
     guard let items = self.items else { return }
     items.first(where: { $0.id == itemID})?.isFavourite = false
     
     state = .loaded(items)
   }
   
-  func addToFavourites(itemID: UUID) {
+  private func addToFavourites(itemID: UUID) {
     guard let items = self.items else { return }
     items.first(where: { $0.id == itemID})?.isFavourite = true
     
     state = .loaded(items)
+  }
+  
+  func onItemTapped(item: Item) {
+    Router.shared
+      .push(route: RoutePath(
+          .details(item) { [weak self] action in
+            switch action {
+            case .addToFavorites:
+              self?.addToFavourites(itemID: item.id)
+            case .removeFromFavorites:
+              self?.removeFromFavourites(itemID: item.id)
+            }
+          }
+        )
+      )
   }
 }
 
