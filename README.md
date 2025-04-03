@@ -2,5 +2,5 @@
 
 ## A simple two screens list details application using:
 
- - MVVM arcitecture;
+ - MVVM architecture;
  - navigation with NavigationStack and NavigationPath.
