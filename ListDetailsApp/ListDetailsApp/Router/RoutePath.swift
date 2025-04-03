@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 struct RoutePath: Hashable {
-  var route: Routes = .none
+  var route: Routes = .unknown
   var hashValue = { UUID().uuid }
   
   init(_ route: Routes) {
